@@ -276,14 +276,6 @@ details summary{cursor:pointer;font-weight:600;padding:.3rem 0}
   <div id="r-remind" hidden></div>
   <div id="r-backup" hidden></div>
   <div id="h-offline" class="banner warn" hidden>Speichern ist gerade nicht verfügbar, Einträge gehen verloren, wenn du die Seite schließt.</div>
-  <div class="card" id="h-day"></div>
-  <div class="diary">
-    <button class="mic" id="d-mic" aria-label="Tag erzählen"><svg viewBox="0 0 24 24" class="cmic"><circle cx="12" cy="12" r="10" stroke-dasharray="52 8" transform="rotate(-30 12 12)"/><rect x="10" y="6.5" width="4" height="7" rx="2"/><path d="M8.5 11.5a3.5 3.5 0 0 0 7 0M12 15v2.5"/></svg></button>
-    <div class="grow"><div style="font-weight:700">Erzähl Conny von deinem Tag</div><div class="small muted" id="d-hint">Sprich einfach: was du gegessen hast, ob du trainiert hast, dein Gewicht, Conny trägt alles ein.</div></div>
-  </div>
-  <div id="d-result" hidden></div>
-  <div id="r-offer" hidden></div>
-  <div id="r-box" hidden></div>
   <div class="card">
     <div class="gauge"><svg viewBox="0 0 230 130" id="h-gauge"></svg><div class="c"><div class="d" id="g-date"></div><div class="k" id="m-kcal">0 kcal</div><div class="g" id="h-target"></div></div></div>
     <div class="metrics" style="grid-template-columns:1fr 1fr 1fr">
@@ -293,6 +285,14 @@ details summary{cursor:pointer;font-weight:600;padding:.3rem 0}
     </div>
     <button class="plus" data-go="essen" aria-label="Mahlzeit loggen">+</button>
   </div>
+  <div class="diary">
+    <button class="mic" id="d-mic" aria-label="Tag erzählen"><svg viewBox="0 0 24 24" class="cmic"><circle cx="12" cy="12" r="10" stroke-dasharray="52 8" transform="rotate(-30 12 12)"/><rect x="10" y="6.5" width="4" height="7" rx="2"/><path d="M8.5 11.5a3.5 3.5 0 0 0 7 0M12 15v2.5"/></svg></button>
+    <div class="grow"><div style="font-weight:700">Erzähl Conny von deinem Tag</div><div class="small muted" id="d-hint">Sprich einfach: was du gegessen hast, ob du trainiert hast, dein Gewicht, Conny trägt alles ein.</div></div>
+  </div>
+  <div id="d-result" hidden></div>
+  <div class="card" id="h-day"></div>
+  <div id="r-offer" hidden></div>
+  <div id="r-box" hidden></div>
   <div class="card">
     <div class="row between"><h2>Gewicht heute</h2><span class="small muted" id="h-wavg"></span></div>
     <div class="row"><input type="number" inputmode="decimal" step="0.1" id="h-weight" placeholder="kg, morgens nüchtern"><button class="btn small" id="h-wsave">Speichern</button></div>
@@ -822,14 +822,14 @@ $('#s-est').onclick=estimate;
 async function estimate(){
   if(!AI.ready()){ $('#s-status').textContent='Kein API Schlüssel, über das Zahnrad einrichten.'; return; }
   const desc=$('#s-desc').value.trim()||$('#s-name').value.trim(); if(!desc&&!(pending&&pending.blob&&canImages)){ $('#s-status').textContent='Beschreibe die Mahlzeit kurz.'; return false; }
-  $('#s-status').textContent='Schätze …'; $('#s-est').disabled=true;
+  $('#s-status').innerHTML=dotsHtml('Conny schätzt'); $('#s-est').disabled=true;
   const prompt='Du bist Ernährungscoach. Schätze Nährwerte dieser Mahlzeit für eine Person mit '+P.weight+' kg ('+sexName(P.sex)+') mit normalen Portionen.'+(pending&&pending.blob&&canImages?' Ein Foto der Mahlzeit ist beigefügt; schätze Portionsgrößen aus dem Bild.':'')+(desc?' Beschreibung: "'+desc+'".':'')+(P.notes?' Hinweise zu üblichen Mahlzeiten: '+P.notes.slice(0,400):'')+' Antworte NUR als JSON: {"name":"kurzer Name","kcal":Zahl,"p":Zahl,"kh":Zahl,"f":Zahl,"note":"ein Satz zur Unsicherheit oder Tipp"}';
   try{ const opts={system:MASTER}; if(pending&&pending.blob&&canImages) opts.image=pending.blob; const r=await AI.json(prompt,opts);
     $('#s-name').value=r.name||''; $('#s-kcal').value=Math.round(r.kcal||0); $('#s-p').value=Math.round(r.p||0); $('#s-kh').value=Math.round(r.kh||0); $('#s-f').value=Math.round(r.f||0); $('#s-note').textContent=r.note||''; $('#s-status').textContent='Geschätzt, bitte prüfen.'; $('#s-est').disabled=false; return true;
   }catch(err){ $('#s-status').textContent=aiError(err); console.warn(err); }
   $('#s-est').disabled=false; return false;
 }
-$('#s-save').onclick=async()=>{ if(!(+$('#s-kcal').value)){ const has=$('#s-desc').value.trim()||$('#s-name').value.trim()||(pending&&pending.blob); if(has){ $('#s-status').textContent='Keine Werte eingetragen, Conny schätzt kurz …'; const ok=await estimate(); if(!ok&&!confirm('Keine Nährwerte. Trotzdem mit 0 speichern?')) return; if(ok&&!confirm('Geschätzt: '+$('#s-kcal').value+' kcal, '+$('#s-p').value+' g Protein. So speichern?')) return; } else if(!confirm('Keine Nährwerte. Trotzdem mit 0 speichern?')) return; }
+$('#s-save').onclick=async()=>{ if(!(+$('#s-kcal').value)){ const has=$('#s-desc').value.trim()||$('#s-name').value.trim()||(pending&&pending.blob); if(has){ $('#s-status').innerHTML=dotsHtml('Keine Werte eingetragen, Conny schätzt'); const ok=await estimate(); if(!ok&&!confirm('Keine Nährwerte. Trotzdem mit 0 speichern?')) return; if(ok&&!confirm('Geschätzt: '+$('#s-kcal').value+' kcal, '+$('#s-p').value+' g Protein. So speichern?')) return; } else if(!confirm('Keine Nährwerte. Trotzdem mit 0 speichern?')) return; }
   const name=$('#s-name').value.trim()||$('#s-desc').value.trim().slice(0,40)||'Mahlzeit'; const vals={name,kcal:+$('#s-kcal').value||0,p:+$('#s-p').value||0,kh:+$('#s-kh').value||0,f:+$('#s-f').value||0}; const log=getLog(today());
   if(editingId){ const m=log.meals.find(x=>x.id===editingId); if(m) Object.assign(m,vals); } else log.meals.push(Object.assign({id:Date.now().toString(36),t:new Date().toTimeString().slice(0,5),thumb:pending?pending.thumb:null},vals));
   closeSheet(); saveLog(today()); };
@@ -955,6 +955,8 @@ function instructions(){
   '\nERNÄHRUNG (aktuelle Ziele, einstellbar): Trainingstag '+P.kt+' kcal, Ruhetag '+P.kr+', Protein ~'+P.p+' g, KH ~'+P.kh+' g am Trainingstag (weniger am Ruhetag), Fett ~'+P.f+' g. Erhaltung ≈ '+maintKcal()+' kcal.'+
   '\nREGELN: Wiegen als Wochenmittel, Ziel im Defizit 0,2 bis 0,5 kg/Woche. In Woche 4, 8, 12 einer Defizitphase Erhaltung. Heftiger Muskelkater = Reiz oder Versorgung hat nicht gepasst, nicht härter trainieren. HIIT nie bei Muskelkater oder direkt vor einem Krafttag. Abends Hunger: Süßkartoffel, Joghurt, Banane. Keine medizinischen Diagnosen; bei Schmerzen, die nicht Muskelkater sind, zum Arzt. Wenn Daten fehlen, sag es und frag nach.\n\nAKTUELLE DATEN AUS DER APP:\n'+contextSummary();
 }
+const DOTS='<span class="dots"><i></i><i></i><i></i></span>';
+function dotsHtml(label){ return (label?esc(label)+' ':'')+DOTS; }
 function addMsg(role,text){ const el=document.createElement('div'); el.className='msg '+role; el.textContent=text; if(role==='ai'){ const w=document.createElement('div'); w.className='ai-row'; w.innerHTML='<div class="avatar sm"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div>'; w.appendChild(el); $('#chat').appendChild(w); } else $('#chat').appendChild(el); return el; }
 function scrollChat(){ window.scrollTo(0,document.body.scrollHeight); }
 function renderChat(){ const c=$('#chat'); c.innerHTML=''; $('#v-coach').classList.toggle('empty',!chatLog.length); if(!chatLog.length) addMsg('sys','Hi '+P.name+', ich bin Conny. Frag mich zu Training, Essen, Muskelkater, Fortschritt, ich sehe deine heutigen Einträge.'); chatLog.forEach(m=>addMsg(m.role==='user'?'me':'ai',m.content)); }
@@ -963,7 +965,7 @@ let busy=false;
 async function send(text){
   text=(text||'').trim(); if(!text||busy) return; if(!AI.ready()){ addMsg('sys','Kein API Schlüssel hinterlegt, über das Zahnrad einrichten.'); return; }
   busy=true; $('#chat-send').disabled=true; $('#chat-in').value='';
-  chatLog.push({role:'user',content:text}); $('#v-coach').classList.remove('empty'); addMsg('me',text); const el=addMsg('ai','…'); scrollChat();
+  chatLog.push({role:'user',content:text}); $('#v-coach').classList.remove('empty'); addMsg('me',text); const el=addMsg('ai',''); el.innerHTML=DOTS; scrollChat();
   const turns=chatLog.slice(-12);
   try{ const t=await AI.chat(turns,{system:instructions(),maxTokens:1200});
     el.textContent=t; chatLog.push({role:'assistant',content:t}); persistChat(); if($('#tts').checked) speak(t);
@@ -980,7 +982,8 @@ const SR=window.SpeechRecognition||window.webkitSpeechRecognition; let rec=null,
 let mrec=null, mchunks=[], mOn=false;
 async function transcribeBlob(blob){ const c=AI.cfg(); if(c.provider!=='openai'||!c.key) throw {code:'nostt'}; const fd=new FormData(); fd.append('file',blob,'audio.webm'); fd.append('model','whisper-1'); fd.append('language','de'); const r=await fetch('https://api.openai.com/v1/audio/transcriptions',{method:'POST',headers:{'Authorization':'Bearer '+c.key},body:fd}); if(!r.ok) throw {code:'http',message:(await r.text()).slice(0,200)}; const j=await r.json(); return j.text||''; }
 async function recordToggle(btn,onText,onHint){ if(mOn){ mrec.stop(); return; } const c=AI.cfg(); if(c.provider!=='openai'){ onHint('Dein Browser hat keine eingebaute Spracherkennung (Firefox, Safari). So geht Sprache trotzdem: ins Textfeld tippen, auf der Handytastatur die Mikrofontaste drücken (bei Gboard oben rechts), sprechen, dann Senden. Alternativ Chrome nutzen oder OpenAI als Anbieter, dann nimmt die App direkt auf.'); return; }
-  try{ const stream=await navigator.mediaDevices.getUserMedia({audio:true}); mrec=new MediaRecorder(stream); mchunks=[]; mrec.ondataavailable=e=>mchunks.push(e.data); mrec.onstop=async()=>{ stream.getTracks().forEach(t=>t.stop()); mOn=false; btn.classList.remove('rec'); onHint('Wird transkribiert …'); try{ const t=await transcribeBlob(new Blob(mchunks,{type:'audio/webm'})); onHint(''); if(t.trim()) onText(t.trim()); else onHint('Nichts verstanden.'); }catch(err){ onHint(aiError(err)); } }; mrec.start(); mOn=true; btn.classList.add('rec'); onHint('Aufnahme läuft, nochmal tippen zum Beenden.'); }catch(e){ onHint('Mikrofon nicht erlaubt.'); } }
+  try{ const stream=await navigator.mediaDevices.getUserMedia({audio:true}); mrec=new MediaRecorder(stream); mchunks=[]; mrec.ondataavailable=e=>mchunks.push(e.data); mrec.onstop=async()=>{ stream.getTracks().forEach(t=>t.stop()); mOn=false; btn.classList.remove('rec'); onHint('');
+      const hb=$('#d-hint'); if(hb) hb.innerHTML=dotsHtml('Conny hört zu'); try{ const t=await transcribeBlob(new Blob(mchunks,{type:'audio/webm'})); onHint(''); if(t.trim()) onText(t.trim()); else onHint('Nichts verstanden.'); }catch(err){ onHint(aiError(err)); } }; mrec.start(); mOn=true; btn.classList.add('rec'); onHint('Aufnahme läuft, nochmal tippen zum Beenden.'); }catch(e){ onHint('Mikrofon nicht erlaubt.'); } }
 $('#mic').onclick=()=>{ if(!SR){ recordToggle($('#mic'),t=>send(t),h=>{ if(h) addMsg('sys',h); }); return; } if(recOn){ rec.stop(); return; }
   rec=new SR(); rec.lang='de-DE'; rec.interimResults=true; rec.continuous=false; let finalText='';
   rec.onresult=e=>{ let t=''; for(const r of e.results){ t+=r[0].transcript; if(r.isFinal) finalText=t; } $('#chat-in').value=t; };
@@ -1010,7 +1013,7 @@ $('#d-mic').onclick=()=>{ if(!AI.ready()){ alert('Kein API Schlüssel hinterlegt
   drec.onerror=()=>{ dOn=false; $('#d-mic').classList.remove('rec'); $('#d-hint').textContent='Mikrofonfehler. Nochmal versuchen.'; };
   try{ speechSynthesis&&speechSynthesis.cancel(); drec.start(); dOn=true; $('#d-mic').classList.add('rec'); $('#d-hint').textContent='Ich höre … (nochmal tippen zum Beenden)'; }catch(e){} };
 async function diary(text){
-  $('#d-hint').textContent='Conny trägt ein …'; const d=today(), log=getLog(d);
+  $('#d-hint').innerHTML=dotsHtml('Conny trägt ein'); const d=today(), log=getLog(d);
   const prompt='Du bist Conny, Fitnesscoach in einer Tracking App. '+P.name+' ('+sexName(P.sex)+', '+P.weight+' kg) erzählt in einer Sprachnachricht vom Tag. Extrahiere ALLES Loggbare und schätze Nährwerte realistisch (normale Portionen).'+(P.notes?' Übliche Mahlzeiten: '+P.notes.slice(0,400):'')+' Heute geplant: '+PLAN.names[dayType(d)]+'. Bereits geloggt: '+(log.meals.map(m=>m.name).join(', ')||'nichts')+', diese NICHT erneut anlegen.\nSprachnachricht: "'+text.replace(/"/g,"'")+'"\nAntworte NUR als JSON: {"meals":[{"name":"...","kcal":Zahl,"p":Zahl,"kh":Zahl,"f":Zahl,"time":"HH:MM oder leer"}],"workout":{"mentioned":true|false,"type":"kraftA|kraftB|hiit|mob|rest","done":true|false,"minutes":Zahl oder null,"note":"kurz, was gesagt wurde"},"activities":[{"name":"z. B. Dehnen","minutes":Zahl oder null,"detail":"kurz"}],"weight":Zahl oder null,"waist":Zahl oder null,"period_started":true|false,"reply":"2 bis 3 Sätze Reaktion als Conny, direkt und ehrlich, mit Bezug auf Ziel '+targetFor(d).kcal+' kcal / '+targetFor(d).p+' g Protein"}';
   try{
     const r=await AI.json(prompt,{system:MASTER,maxTokens:1800});
@@ -1038,7 +1041,7 @@ $('#i-scope').addEventListener('click',e=>{ const c=e.target.closest('.chip'); i
 $('#i-go').onclick=async()=>{ if(!AI.ready()){ $('#i-status').textContent='Kein API Schlüssel hinterlegt.'; return; }
   const scope=($('#i-scope .chip.on')||{}).dataset.v||'Mahlzeit'; const wish=$('#i-wish').value.trim(); const d=today(); const log=getLog(d); const tot=totals(log); const tg=targetFor(d);
   const rest={kcal:Math.max(0,tg.kcal-tot.kcal),p:Math.max(0,tg.p-tot.p),kh:Math.max(0,tg.kh-tot.kh),f:Math.max(0,tg.f-tot.f)};
-  $('#i-status').textContent='Conny überlegt …'; $('#i-go').disabled=true; $('#i-list').innerHTML='';
+  $('#i-status').innerHTML=dotsHtml('Conny überlegt'); $('#i-go').disabled=true; $('#i-list').innerHTML='';
   const n=scope==='Woche'?'7 Tage mit je Frühstück, Mittag, Abend (21 Einträge, when = "Mo Frühstück" usw.)':(scope==='Tag'?'einen ganzen Tag: Frühstück, Mittag, Snack, Abend (4 Einträge)':'3 Vorschläge für '+scope);
   const prompt='Du bist Conny und schlägst '+P.name+' ('+sexName(P.sex)+', '+P.weight+' kg, Ziel: '+P.goal+', Phase: '+P.phase+(P.limits?', Einschränkungen: '+P.limits:'')+') Essen vor. Tagesziel: '+tg.kcal+' kcal, '+tg.p+' g Protein, '+tg.kh+' g KH, '+tg.f+' g Fett. Heute bereits gegessen: '+(log.meals.map(m=>m.name+' ('+Math.round(m.kcal)+' kcal)').join(', ')||'nichts')+'; noch offen heute: '+rest.kcal+' kcal, '+rest.p+' g Protein. '+(P.notes?'Gewohnheiten: '+P.notes.slice(0,300)+'. ':'')+(wish?'Wünsche: '+wish+'. ':'')+'Erstelle '+n+'. Alltagstauglich, Zutaten aus dem Supermarkt, Protein hoch, passend zu den offenen Werten (für Tag/Woche zu den Tageszielen). Wenn du Websuche nutzen kannst, verlinke pro Vorschlag ein passendes echtes Rezept (url). Antworte NUR als JSON: {"items":[{"when":"'+(scope==='Woche'?'Mo Frühstück':scope)+'","title":"Gerichtname","kcal":Zahl,"p":Zahl,"kh":Zahl,"f":Zahl,"how":"1 bis 2 Sätze Zubereitung und Mengen","url":"https://… oder leer"}],"note":"ein Satz von Conny dazu"}';
   try{ const opts={system:MASTER,maxTokens:3500,web:!!$('#i-web').checked}; const r=await AI.json(prompt,opts);
@@ -1075,7 +1078,7 @@ async function makeMonthly(key){
 }
 async function runReport(prompt,meta){
   if(!AI.ready()){ alert('Conny ist gerade nicht verfügbar.'); return; }
-  const box=$('#r-box'); box.hidden=false; box.innerHTML='<div class="card"><h2>'+meta.title+'</h2><p class="small muted">Conny wertet aus …</p></div>';
+  const box=$('#r-box'); box.hidden=false; box.innerHTML='<div class="card"><h2>'+meta.title+'</h2><p class="small muted">'+dotsHtml('Conny wertet aus')+'</p></div>';
   try{ const r=await AI.json(prompt,{system:MASTER,maxTokens:3000});
     const rep=Object.assign({},meta,r,{created:Date.now(),decided:null}); reports=reports.filter(x=>!(x.date===rep.date&&x.type===rep.type)).concat([rep]); await saveReports(); renderReport(rep,box); renderDiary(); }
   catch(err){ console.warn(err); box.innerHTML='<div class="card"><h2>'+meta.title+'</h2><p class="small muted">'+aiError(err)+'</p></div>'; }
@@ -1146,9 +1149,14 @@ async function unlock(id){ const prof=await IDB.get('profile:'+id); if(!prof||!p
   const tryIt=async()=>{ const v=$('#u-pin').value; if(await sha(v)===prof.pinHash) activate(id); else { $('#u-err').textContent='Falscher Code.'; $('#u-pin').value=''; $('#u-pin').focus(); } };
   $('#u-ok').onclick=tryIt; $('#u-pin').addEventListener('input',()=>{ if($('#u-pin').value.length===4) tryIt(); }); $('#u-back').onclick=showPicker; $('#u-pin').focus(); }
 $('#o-new').onclick=()=>startQuiz(null);
-function showWelcome(p){ $('#onb').classList.add('on'); $('#o-quiz').classList.remove('on'); $('#o-pick').classList.add('on');
-  $('#o-pick h1').innerHTML='Hi '+esc(p.name)+'<span>schön, dass du da bist.</span>'; $('#o-pick p').hidden=true;
-  const l=$('#o-profiles'); l.innerHTML=''; const b=document.createElement('button'); b.className='btn primary'; b.style.width='100%'; b.textContent='Lass uns den Tag beginnen'; b.onclick=()=>unlock(p.id); l.appendChild(b);
+async function peekToday(id){ try{ return await IDB.get('p:'+id+':log:'+today()); }catch(e){ return null; } }
+async function showWelcome(p){ $('#onb').classList.add('on'); $('#o-quiz').classList.remove('on'); $('#o-pick').classList.add('on');
+  const h=new Date().getHours(); const greet=h<11?'Guten Morgen':(h<18?'Hi':'Guten Abend');
+  const log=await peekToday(p.id); const n=log?(log.meals||[]).length:0; const done=!!(log&&log.workout&&log.workout.done); const extra=log&&log.workout&&log.workout.extra?log.workout.extra.length:0; const any=n>0||done||extra>0||!!(log&&log.weight);
+  let sub, btn; if(!any){ sub=h>=20?'noch nichts eingetragen, holen wir nach.':'schön, dass du da bist.'; btn=h>=20?'Lass uns den Tag nachtragen':'Lass uns den Tag beginnen'; }
+  else { const parts=[]; if(n) parts.push(n+(n===1?' Mahlzeit':' Mahlzeiten')); if(done) parts.push('Training erledigt'); else if(extra) parts.push(extra+(extra===1?' Aktivität':' Aktivitäten')); if(log.weight) parts.push('Gewicht'); sub='heute schon dabei: '+parts.join(', ')+'.'; btn=h>=20?'Lass uns den Tag abschließen':'Lass uns weitermachen'; }
+  $('#o-pick h1').innerHTML=greet+' '+esc(p.name)+'<span>'+esc(sub)+'</span>'; $('#o-pick p').hidden=true;
+  const l=$('#o-profiles'); l.innerHTML=''; const b=document.createElement('button'); b.className='btn primary'; b.style.width='100%'; b.textContent=btn; b.onclick=()=>unlock(p.id); l.appendChild(b);
   const other=document.createElement('button'); other.className='x'; other.style.width='100%'; other.style.fontSize='.85rem'; other.textContent=profiles.length>1?'Anderes Profil':'Neues Profil anlegen'; other.onclick=()=>{ if(profiles.length>1) showPicker(); else startQuiz(null); }; l.appendChild(other);
   $('#o-pick .actions').style.display='none'; }
 let Q=null, qi=0;
@@ -1193,7 +1201,7 @@ async function activate(id){ pid=id; local.set('activePid',id);
 function openAI(){ const c=AI.cfg(); $('#a-provider').value=c.provider||'anthropic'; $('#a-key').value=c.key||''; $('#a-model').value=c.model||''; $('#a-model').placeholder=AI.model({provider:$('#a-provider').value}); $('#a-status').textContent=''; $('#asheet').classList.add('on'); }
 $('#a-provider').onchange=()=>{ $('#a-model').placeholder=AI.model({provider:$('#a-provider').value}); };
 $('#a-close').onclick=()=>$('#asheet').classList.remove('on');
-$('#a-save').onclick=async()=>{ const c={provider:$('#a-provider').value,key:$('#a-key').value.trim(),model:$('#a-model').value.trim()}; AI.save(c); $('#a-status').textContent='Teste …';
+$('#a-save').onclick=async()=>{ const c={provider:$('#a-provider').value,key:$('#a-key').value.trim(),model:$('#a-model').value.trim()}; AI.save(c); $('#a-status').innerHTML=dotsHtml('Verbindung wird getestet');
   try{ const t=await AI.chat([{role:'user',content:'Sag nur: Bereit.'}],{maxTokens:20}); $('#a-status').textContent='Verbunden: '+t.slice(0,40); sample=true; canImages=true; $('#coach-off').hidden=true; $('#e-nophoto').hidden=true; setTimeout(()=>$('#asheet').classList.remove('on'),700); }
   catch(err){ $('#a-status').textContent=aiError(err); } };
 $('#g-pin').onclick=async()=>{ const a=prompt('Neuer vierstelliger Code (leer = Code entfernen):'); if(a===null) return; if(a===''){ delete P.pinHash; await saveProfile(); alert('Code entfernt.'); return; } if(!/^\d{4}$/.test(a)){ alert('Genau 4 Ziffern.'); return; } P.pinHash=await sha(a); await saveProfile(); alert('Code gesetzt.'); };
@@ -1212,7 +1220,7 @@ try{ $('#tts').checked=!!local.get('tts'); }catch(e){} scheduleNoonNotification(
   $('#h-offline').hidden=true;
   await loadProfiles();
   const last=local.get('activePid');
-  const lp=profiles.find(p=>p.id===last); if(lp){ P=null; showWelcome(lp); } else showPicker();
+  const lp=profiles.find(p=>p.id===last); if(lp){ P=null; await showWelcome(lp); } else showPicker();
   sample=AI.ready(); canImages=sample; $('#coach-off').hidden=!!sample; $('#composer').hidden=view!=='coach'||!sample; $('#e-nophoto').hidden=!!sample;
   if('serviceWorker' in navigator && location.protocol==='https:'){ try{ const sw='self.addEventListener("fetch",()=>{});'; navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'text/javascript'}))).catch(()=>{}); }catch(e){} }
 })();
