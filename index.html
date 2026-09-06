@@ -621,9 +621,9 @@ const AI={
       if(!r.ok){ const e=await r.text(); throw {code:r.status===401?'auth':'http',message:e.slice(0,300)}; }
       const j=await r.json(); return (j.content||[]).filter(x=>x.type==='text').map(x=>x.text).join('');
     } },
-  async json(prompt,opts){ const t=await AI.chat([{role:'user',content:prompt}],Object.assign({},opts,{json:true})); const m=t.match(/\{[\s\S]*\}/); return JSON.parse(m?m[0]:t); }
+  async json(prompt,opts){ const t=await AI.chat([{role:'user',content:prompt}],Object.assign({},opts,{json:true,maxTokens:(opts&&opts.maxTokens)||2000})); let x=t.replace(/```json|```/g,'').trim(); const a=x.indexOf('{'), b=x.lastIndexOf('}'); if(a>=0&&b>a) x=x.slice(a,b+1); try{ return JSON.parse(x); }catch(e){ throw {code:'parse',message:'Antwort unvollständig oder nicht lesbar. Bitte nochmal versuchen.'}; } }
 };
-function aiError(err){ if(!err) return 'Fehler.'; if(err.code==='not_configured') return 'Kein API Schlüssel hinterlegt, über das Zahnrad einrichten.'; if(err.code==='auth') return 'API Schlüssel ungültig oder abgelaufen.'; if(err.code==='http') return 'Anbieterfehler: '+(err.message||''); return 'Verbindung fehlgeschlagen, Netz prüfen.'; }
+function aiError(err){ if(!err) return 'Fehler.'; if(err.code==='not_configured') return 'Kein API Schlüssel hinterlegt, über das Zahnrad einrichten.'; if(err.code==='auth') return 'API Schlüssel ungültig oder abgelaufen.'; if(err.code==='http') return 'Anbieterfehler: '+(err.message||''); if(err.code==='parse') return err.message; if(err.code==='nostt') return 'Keine Spracherkennung mit diesem Anbieter.'; return 'Verbindung fehlgeschlagen, Netz prüfen. ('+(err.message||err.code||err)+')'; }
 
 /* ---------- nav ---------- */
 let view='heute';
@@ -1013,7 +1013,7 @@ async function diary(text){
   $('#d-hint').textContent='Conny trägt ein …'; const d=today(), log=getLog(d);
   const prompt='Du bist Conny, Fitnesscoach in einer Tracking App. '+P.name+' ('+sexName(P.sex)+', '+P.weight+' kg) erzählt in einer Sprachnachricht vom Tag. Extrahiere ALLES Loggbare und schätze Nährwerte realistisch (normale Portionen).'+(P.notes?' Übliche Mahlzeiten: '+P.notes.slice(0,400):'')+' Heute geplant: '+PLAN.names[dayType(d)]+'. Bereits geloggt: '+(log.meals.map(m=>m.name).join(', ')||'nichts')+', diese NICHT erneut anlegen.\nSprachnachricht: "'+text.replace(/"/g,"'")+'"\nAntworte NUR als JSON: {"meals":[{"name":"...","kcal":Zahl,"p":Zahl,"kh":Zahl,"f":Zahl,"time":"HH:MM oder leer"}],"workout":{"mentioned":true|false,"type":"kraftA|kraftB|hiit|mob|rest","done":true|false,"minutes":Zahl oder null,"note":"kurz, was gesagt wurde"},"activities":[{"name":"z. B. Dehnen","minutes":Zahl oder null,"detail":"kurz"}],"weight":Zahl oder null,"waist":Zahl oder null,"period_started":true|false,"reply":"2 bis 3 Sätze Reaktion als Conny, direkt und ehrlich, mit Bezug auf Ziel '+targetFor(d).kcal+' kcal / '+targetFor(d).p+' g Protein"}';
   try{
-    const r=await AI.json(prompt,{system:MASTER,maxTokens:900});
+    const r=await AI.json(prompt,{system:MASTER,maxTokens:1800});
     const done=[];
     (r.meals||[]).forEach(m=>{ if(!m||!m.name) return; log.meals.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),t:(m.time&&/^\d\d:\d\d$/.test(m.time))?m.time:new Date().toTimeString().slice(0,5),name:m.name,kcal:+m.kcal||0,p:+m.p||0,kh:+m.kh||0,f:+m.f||0,thumb:null}); done.push('Mahlzeit: '+m.name+' ('+Math.round(m.kcal||0)+' kcal)'); });
     (r.activities||[]).forEach(a=>{ if(!a||!a.name) return; log.workout.extra=log.workout.extra||[]; log.workout.extra.push({name:a.name,min:+a.minutes||null,detail:a.detail||''}); done.push('Aktivität: '+a.name+(a.minutes?' '+a.minutes+' min':'')); });
@@ -1041,7 +1041,7 @@ $('#i-go').onclick=async()=>{ if(!AI.ready()){ $('#i-status').textContent='Kein 
   $('#i-status').textContent='Conny überlegt …'; $('#i-go').disabled=true; $('#i-list').innerHTML='';
   const n=scope==='Woche'?'7 Tage mit je Frühstück, Mittag, Abend (21 Einträge, when = "Mo Frühstück" usw.)':(scope==='Tag'?'einen ganzen Tag: Frühstück, Mittag, Snack, Abend (4 Einträge)':'3 Vorschläge für '+scope);
   const prompt='Du bist Conny und schlägst '+P.name+' ('+sexName(P.sex)+', '+P.weight+' kg, Ziel: '+P.goal+', Phase: '+P.phase+(P.limits?', Einschränkungen: '+P.limits:'')+') Essen vor. Tagesziel: '+tg.kcal+' kcal, '+tg.p+' g Protein, '+tg.kh+' g KH, '+tg.f+' g Fett. Heute bereits gegessen: '+(log.meals.map(m=>m.name+' ('+Math.round(m.kcal)+' kcal)').join(', ')||'nichts')+'; noch offen heute: '+rest.kcal+' kcal, '+rest.p+' g Protein. '+(P.notes?'Gewohnheiten: '+P.notes.slice(0,300)+'. ':'')+(wish?'Wünsche: '+wish+'. ':'')+'Erstelle '+n+'. Alltagstauglich, Zutaten aus dem Supermarkt, Protein hoch, passend zu den offenen Werten (für Tag/Woche zu den Tageszielen). Wenn du Websuche nutzen kannst, verlinke pro Vorschlag ein passendes echtes Rezept (url). Antworte NUR als JSON: {"items":[{"when":"'+(scope==='Woche'?'Mo Frühstück':scope)+'","title":"Gerichtname","kcal":Zahl,"p":Zahl,"kh":Zahl,"f":Zahl,"how":"1 bis 2 Sätze Zubereitung und Mengen","url":"https://… oder leer"}],"note":"ein Satz von Conny dazu"}';
-  try{ const opts={system:MASTER,maxTokens:1800,web:!!$('#i-web').checked}; const r=await AI.json(prompt,opts);
+  try{ const opts={system:MASTER,maxTokens:3500,web:!!$('#i-web').checked}; const r=await AI.json(prompt,opts);
     const list=$('#i-list'); list.innerHTML=(r.note?'<p class="small" style="margin:.6rem 0 0">'+esc(r.note)+'</p>':'');
     (r.items||[]).forEach(it=>{ const el=document.createElement('div'); el.className='idea'; const q=encodeURIComponent(it.title||''); const url=(it.url&&/^https?:\/\//.test(it.url))?it.url:'';
       el.innerHTML='<div class="w">'+esc(it.when||scope)+'</div><div class="n">'+esc(it.title)+'</div><div class="m"><b>'+Math.round(it.kcal||0)+' kcal</b> · P '+Math.round(it.p||0)+' g · KH '+Math.round(it.kh||0)+' g · F '+Math.round(it.f||0)+' g</div><div class="h">'+esc(it.how||'')+'</div><div class="acts">'+(url?'<a href="'+esc(url)+'" target="_blank" rel="noopener">Rezept</a>':'')+'<a href="https://www.google.com/search?tbm=isch&q='+q+'" target="_blank" rel="noopener">Bilder</a><a href="https://www.google.com/search?q='+q+'+rezept" target="_blank" rel="noopener">Rezepte suchen</a>'+(scope!=='Woche'?'<button type="button" class="log">Heute loggen</button>':'')+'</div>';
@@ -1076,7 +1076,7 @@ async function makeMonthly(key){
 async function runReport(prompt,meta){
   if(!AI.ready()){ alert('Conny ist gerade nicht verfügbar.'); return; }
   const box=$('#r-box'); box.hidden=false; box.innerHTML='<div class="card"><h2>'+meta.title+'</h2><p class="small muted">Conny wertet aus …</p></div>';
-  try{ const r=await AI.json(prompt,{system:MASTER,maxTokens:1200});
+  try{ const r=await AI.json(prompt,{system:MASTER,maxTokens:3000});
     const rep=Object.assign({},meta,r,{created:Date.now(),decided:null}); reports=reports.filter(x=>!(x.date===rep.date&&x.type===rep.type)).concat([rep]); await saveReports(); renderReport(rep,box); renderDiary(); }
   catch(err){ console.warn(err); box.innerHTML='<div class="card"><h2>'+meta.title+'</h2><p class="small muted">'+aiError(err)+'</p></div>'; }
 }
