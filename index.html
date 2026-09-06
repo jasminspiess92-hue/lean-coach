@@ -270,7 +270,7 @@ details summary{cursor:pointer;font-weight:600;padding:.3rem 0}
 
 <!-- HEUTE -->
 <section class="view on" id="v-heute">
-  <div class="head"><span class="tag" id="h-week"></span><div class="row"><button class="icon-btn" id="goals-open" aria-label="Profil & Ziele" title="Profil & Ziele"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div></div>
+  <div class="head"><span class="tag" id="h-week"></span><div class="row"><button class="theme-toggle" id="theme-btn" aria-label="Hell oder Dunkel" title="Hell / Dunkel"><span class="knob"><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span></button><button class="icon-btn" id="goals-open" aria-label="Profil & Ziele" title="Profil & Ziele"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div></div>
   <div class="eyebrow" id="h-date"></div><h1 id="h-title">Hi<span id="h-sub"></span></h1>
   <div id="h-cycle" hidden style="margin:-.6rem 0 .9rem"></div>
   <div id="r-remind" hidden></div>
@@ -278,7 +278,7 @@ details summary{cursor:pointer;font-weight:600;padding:.3rem 0}
   <div id="h-offline" class="banner warn" hidden>Speichern ist gerade nicht verfügbar, Einträge gehen verloren, wenn du die Seite schließt.</div>
   <div class="card" id="h-day"></div>
   <div class="diary">
-    <button class="mic" id="d-mic" aria-label="Tag erzählen"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+    <button class="mic" id="d-mic" aria-label="Tag erzählen"><svg viewBox="0 0 24 24" class="cmic"><circle cx="12" cy="12" r="10" stroke-dasharray="52 8" transform="rotate(-30 12 12)"/><rect x="10" y="6.5" width="4" height="7" rx="2"/><path d="M8.5 11.5a3.5 3.5 0 0 0 7 0M12 15v2.5"/></svg></button>
     <div class="grow"><div style="font-weight:700">Erzähl Conny von deinem Tag</div><div class="small muted" id="d-hint">Sprich einfach: was du gegessen hast, ob du trainiert hast, dein Gewicht, Conny trägt alles ein.</div></div>
   </div>
   <div id="d-result" hidden></div>
@@ -322,6 +322,7 @@ details summary{cursor:pointer;font-weight:600;padding:.3rem 0}
     <label class="btn primary" style="text-align:center;display:flex;align-items:center;justify-content:center">📷 Foto aufnehmen<input type="file" accept="image/*" capture="environment" id="e-photo" hidden></label>
     <button class="btn" id="e-text">Beschreiben</button>
   </div>
+  <button class="btn green" id="e-ideas" style="width:100%;margin:-.3rem 0 .8rem">Ideen von Conny: Was soll ich essen?</button>
   <div id="e-nophoto" class="banner warn" hidden>Für Fotoschätzung fehlt der KI Anbieter (Zahnrad, dann KI Anbieter). Werte kannst du trotzdem eintragen.</div>
   <div class="list" id="e-list"></div>
   <details style="margin-top:1rem"><summary class="muted">Frühere Tage</summary><div id="e-hist" class="list small" style="margin-top:.5rem"></div></details>
@@ -357,7 +358,7 @@ details summary{cursor:pointer;font-weight:600;padding:.3rem 0}
 
 <div class="composer" id="composer" hidden>
   <div class="in">
-    <button class="mic" id="mic" aria-label="Sprechen"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+    <button class="mic" id="mic" aria-label="Sprechen"><svg viewBox="0 0 24 24" class="cmic"><circle cx="12" cy="12" r="10" stroke-dasharray="52 8" transform="rotate(-30 12 12)"/><rect x="10" y="6.5" width="4" height="7" rx="2"/><path d="M8.5 11.5a3.5 3.5 0 0 0 7 0M12 15v2.5"/></svg></button>
     <textarea id="chat-in" rows="1" placeholder="Frag Conny …"></textarea>
     <button class="btn primary" id="chat-send">Senden</button>
   </div>
@@ -956,13 +957,13 @@ function instructions(){
 }
 function addMsg(role,text){ const el=document.createElement('div'); el.className='msg '+role; el.textContent=text; if(role==='ai'){ const w=document.createElement('div'); w.className='ai-row'; w.innerHTML='<div class="avatar sm"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div>'; w.appendChild(el); $('#chat').appendChild(w); } else $('#chat').appendChild(el); return el; }
 function scrollChat(){ window.scrollTo(0,document.body.scrollHeight); }
-function renderChat(){ const c=$('#chat'); c.innerHTML=''; if(!chatLog.length) addMsg('sys','Hi '+P.name+', ich bin Conny. Frag mich zu Training, Essen, Muskelkater, Fortschritt, ich sehe deine heutigen Einträge.'); chatLog.forEach(m=>addMsg(m.role==='user'?'me':'ai',m.content)); }
+function renderChat(){ const c=$('#chat'); c.innerHTML=''; $('#v-coach').classList.toggle('empty',!chatLog.length); if(!chatLog.length) addMsg('sys','Hi '+P.name+', ich bin Conny. Frag mich zu Training, Essen, Muskelkater, Fortschritt, ich sehe deine heutigen Einträge.'); chatLog.forEach(m=>addMsg(m.role==='user'?'me':'ai',m.content)); }
 async function persistChat(){ chatLog=chatLog.slice(-40); if(db){ try{ await docp('chat/main').set({msgs:chatLog,updated:Date.now()}); }catch(e){} } else local.set(lk('chat'),chatLog); }
 let busy=false;
 async function send(text){
   text=(text||'').trim(); if(!text||busy) return; if(!AI.ready()){ addMsg('sys','Kein API Schlüssel hinterlegt, über das Zahnrad einrichten.'); return; }
   busy=true; $('#chat-send').disabled=true; $('#chat-in').value='';
-  chatLog.push({role:'user',content:text}); addMsg('me',text); const el=addMsg('ai','…'); scrollChat();
+  chatLog.push({role:'user',content:text}); $('#v-coach').classList.remove('empty'); addMsg('me',text); const el=addMsg('ai','…'); scrollChat();
   const turns=chatLog.slice(-12);
   try{ const t=await AI.chat(turns,{system:instructions(),maxTokens:700});
     el.textContent=t; chatLog.push({role:'assistant',content:t}); persistChat(); if($('#tts').checked) speak(t);
@@ -973,11 +974,12 @@ $('#chat-send').onclick=()=>send($('#chat-in').value);
 $('#chat-in').addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); send($('#chat-in').value); } });
 $('#chat-in').addEventListener('input',function(){ this.style.height='auto'; this.style.height=Math.min(120,this.scrollHeight)+'px'; });
 /* voice */
+if(!(window.SpeechRecognition||window.webkitSpeechRecognition)){ const hb=document.createElement('p'); hb.className='small muted'; hb.style.margin='0 0 .5rem'; hb.textContent='Hinweis für Firefox und Safari: Sprache über die Mikrofontaste der Handytastatur (Gboard) im Textfeld eingeben.'; const c=$('#chat'); c.parentNode.insertBefore(hb,c); }
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition; let rec=null, recOn=false;
 /* Firefox / Safari fallback: record audio and transcribe via OpenAI Whisper (only with OpenAI key) */
 let mrec=null, mchunks=[], mOn=false;
 async function transcribeBlob(blob){ const c=AI.cfg(); if(c.provider!=='openai'||!c.key) throw {code:'nostt'}; const fd=new FormData(); fd.append('file',blob,'audio.webm'); fd.append('model','whisper-1'); fd.append('language','de'); const r=await fetch('https://api.openai.com/v1/audio/transcriptions',{method:'POST',headers:{'Authorization':'Bearer '+c.key},body:fd}); if(!r.ok) throw {code:'http',message:(await r.text()).slice(0,200)}; const j=await r.json(); return j.text||''; }
-async function recordToggle(btn,onText,onHint){ if(mOn){ mrec.stop(); return; } const c=AI.cfg(); if(c.provider!=='openai'){ onHint('Firefox und Safari haben keine eingebaute Spracherkennung. Nutze Chrome, die Mikrofontaste der Handytastatur, oder OpenAI als Anbieter (Whisper).'); return; }
+async function recordToggle(btn,onText,onHint){ if(mOn){ mrec.stop(); return; } const c=AI.cfg(); if(c.provider!=='openai'){ onHint('Dein Browser hat keine eingebaute Spracherkennung (Firefox, Safari). So geht Sprache trotzdem: ins Textfeld tippen, auf der Handytastatur die Mikrofontaste drücken (bei Gboard oben rechts), sprechen, dann Senden. Alternativ Chrome nutzen oder OpenAI als Anbieter, dann nimmt die App direkt auf.'); return; }
   try{ const stream=await navigator.mediaDevices.getUserMedia({audio:true}); mrec=new MediaRecorder(stream); mchunks=[]; mrec.ondataavailable=e=>mchunks.push(e.data); mrec.onstop=async()=>{ stream.getTracks().forEach(t=>t.stop()); mOn=false; btn.classList.remove('rec'); onHint('Wird transkribiert …'); try{ const t=await transcribeBlob(new Blob(mchunks,{type:'audio/webm'})); onHint(''); if(t.trim()) onText(t.trim()); else onHint('Nichts verstanden.'); }catch(err){ onHint(aiError(err)); } }; mrec.start(); mOn=true; btn.classList.add('rec'); onHint('Aufnahme läuft, nochmal tippen zum Beenden.'); }catch(e){ onHint('Mikrofon nicht erlaubt.'); } }
 $('#mic').onclick=()=>{ if(!SR){ recordToggle($('#mic'),t=>send(t),h=>{ if(h) addMsg('sys',h); }); return; } if(recOn){ rec.stop(); return; }
   rec=new SR(); rec.lang='de-DE'; rec.interimResults=true; rec.continuous=false; let finalText='';
@@ -1030,7 +1032,7 @@ async function diary(text){
 }
 
 /* ---------- IDEAS ---------- */
-$('#bm').onclick=()=>{ $('#isheet').classList.add('on'); };
+$('#bm').onclick=()=>{ $('#isheet').classList.add('on'); }; $('#e-ideas').onclick=()=>{ $('#isheet').classList.add('on'); };
 $('#i-close').onclick=()=>$('#isheet').classList.remove('on');
 $('#i-scope').addEventListener('click',e=>{ const c=e.target.closest('.chip'); if(!c) return; $('#i-scope').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c)); });
 $('#i-go').onclick=async()=>{ if(!AI.ready()){ $('#i-status').textContent='Kein API Schlüssel hinterlegt.'; return; }
@@ -1112,7 +1114,9 @@ function renderBackupHint(){ const box=$('#r-backup'); if(!box) return; const la
   box.innerHTML='<div class="banner warn"><b>Backup fällig.</b> Deine Daten liegen nur auf diesem Handy. '+(last?'Letztes Backup vor '+daysSince+' Tagen.':'Noch nie gesichert.')+' Ein Backup dauert zehn Sekunden.<div class="row" style="margin-top:.5rem;gap:.4rem"><button class="btn small primary" id="bk-now">Backup jetzt</button><button class="btn small" id="bk-later">In 3 Tagen</button></div></div>';
   $('#bk-now').onclick=()=>exportAll(); $('#bk-later').onclick=()=>{ const d=new Date(); d.setDate(d.getDate()+3); local.set('backupSnooze',iso(d)); box.hidden=true; }; }
 /* ---------- theme ---------- */
-function applyTheme(t){ const r=document.documentElement; if(t==='light'||t==='dark') r.setAttribute('data-theme',t); else r.removeAttribute('data-theme'); local.set('theme',t||'system'); const sel=$('#g-theme'); if(sel) sel.value=t||'system'; }
+function effectiveDark(){ const t=local.get('theme')||'system'; if(t==='dark') return true; if(t==='light') return false; return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches; }
+function applyTheme(t){ const r=document.documentElement; if(t==='light'||t==='dark') r.setAttribute('data-theme',t); else r.removeAttribute('data-theme'); local.set('theme',t||'system'); const sel=$('#g-theme'); if(sel) sel.value=t||'system'; const tb=$('#theme-btn'); if(tb) tb.classList.toggle('dark',effectiveDark()); }
+$('#theme-btn').onclick=()=>applyTheme(effectiveDark()?'light':'dark');
 applyTheme(local.get('theme')||'system');
 $('#g-theme').onchange=()=>applyTheme($('#g-theme').value);
 /* ---------- editable activity targets & step goal ---------- */
